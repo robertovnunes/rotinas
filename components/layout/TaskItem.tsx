@@ -1,0 +1,38 @@
+import React from "react";
+import { View, Text, Button, TouchableOpacity } from "react-native";
+import { Task } from "task";
+
+interface TaskItemProps {
+    task: Task;
+    onToggle: (id: string) => void;
+    onDelete: (id: string) => void;
+}
+
+const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) => {
+    return (
+        <View
+            style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                padding: 10,
+                marginVertical: 5,
+                borderWidth: 1,
+                borderColor: task.completed ? "green" : "gray",
+                borderRadius: 5,
+            }}
+        >
+            <TouchableOpacity onPress={() => onToggle(task.id)} style={{ flex: 1 }}>
+                <Text>
+                    {task.icon} {task.titulo} - {task.horario}
+                </Text>
+                <Text style={{ fontSize: 12, color: "gray" }}>{task.descricao}</Text>
+                <Text style={{ fontSize: 12, color: "blue" }}>
+                    {task.recorrente ? "Recorrente" : "Única"} | {task.dias.join(", ")}
+                </Text>
+            </TouchableOpacity>
+            <Button title="🗑" color="red" onPress={() => onDelete(task.id)} />
+        </View>
+    );
+};
+
+export default TaskItem;
