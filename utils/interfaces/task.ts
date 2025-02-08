@@ -1,4 +1,4 @@
-declare module 'task' {
+declare module 'interfaces/task' {
     export interface Task {
         id: string;
         titulo: string;

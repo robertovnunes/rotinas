@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Button, TouchableOpacity } from "react-native";
-import { Task } from "task";
+import { Task } from "interfaces/task";
 
 interface TaskItemProps {
     task: Task;
