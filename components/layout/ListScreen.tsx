@@ -27,8 +27,7 @@ const ListScreen: React.FC = () => {
         return () => {
             isActive = false;
         };
-  }, [])
-
+    }, [tasks])
   );
 
   useEffect(() => {
