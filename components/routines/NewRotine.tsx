@@ -1,11 +1,13 @@
 import { Task } from 'interfaces/task';
 import React, { useState } from 'react';
 import { View, Text, Button, TextInput, Alert } from 'react-native';
-
+import { FAB, Provider } from "react-native-paper";
 interface NewRoutineProps {
   onAdd: (task: Task) => void;
   onAbort: () => void;
-}
+};
+
+
 
 const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
   const [titulo, setTitulo] = useState('');
@@ -66,7 +68,9 @@ const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
       />
       <View style={{ marginBottom: 10 }}>
         <Text>Selecione os dias da semana:</Text>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'row',
+          marginStart: '5%'
+         }}>
           {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((dia) => (
             <Button
               key={dia}

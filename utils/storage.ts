@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Task} from "task";
+import {Task} from "interfaces/task";
 
 
 const STORAGE_KEY = '@routine_tracker';
