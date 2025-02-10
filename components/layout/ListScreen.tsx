@@ -1,40 +1,75 @@
-import React, { useEffect, useState} from "react";
-import { View, Text, FlatList, Button, TouchableOpacity } from "react-native";
-import { loadTasks } from "../../utils/storage";
+import React, { useEffect, useState, useContext, useCallback} from "react";
+import { View, Text, FlatList } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { loadTasks, saveTasks } from "../../utils/storage";
 import { Task } from "interfaces/task";
 import TaskItem from "./TaskItem";
-
-interface ListScreenProps {
-    onToggle: (id: string) => void;
-    onDelete: (id: string) => void;
-};
+import { ReloadContext } from "../../utils/contexts/reloadContext";
 
     
-const ListScreen: React.FC<ListScreenProps> = ({ onToggle, onDelete }) => {
+const ListScreen: React.FC = () => {
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-    const [tasks, setTasks] = useState<Task[]>([]);
+  const { reload } = useContext(ReloadContext);
 
-    useEffect(() => {
+
+  // Atualizar tarefas sempre que a tela for focada
+  useFocusEffect(
+    useCallback(() => {
+        let isActive = true;
         const fetchTasks = async () => {
-            const savedTasks = await loadTasks();
-            setTasks(savedTasks);
-        }
+            if (isActive) {
+                const savedTasks = await loadTasks();
+                setTasks(savedTasks);
+            }
+        };
         fetchTasks();
-    }, []);
+        return () => {
+            isActive = false;
+        };
+  }, [])
 
-    return (
-        <FlatList
-            data={tasks}
-            keyExtractor={(task) => task.id}
-            renderItem={({ item }) => (
-                <TaskItem
-                    task={item}
-                    onToggle={onToggle}
-                    onDelete={onDelete}
-                />
-            )}
-        />
+  );
+
+  useEffect(() => {
+    saveTasks(tasks);
+  }, [tasks]);
+
+  const toggleTaskCompletion = (id: string) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task,
+      ),
     );
+  };
+
+  const deleteTask = (id: string) => {
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  };
+
+  return (
+    <View style={{ flex: 1, marginTop: 10 }}>
+      <Text style={{ fontSize: 20, textAlign: 'center', margin: 10 }}>
+        Lista de Tarefas
+      </Text>
+      <FlatList
+        data={tasks}
+        keyExtractor={(task) => task.id}
+        renderItem={({ item }) => (
+          <TaskItem
+            task={item}
+            onToggle={toggleTaskCompletion}
+            onDelete={deleteTask}
+          />
+        )}
+        ListEmptyComponent={
+          <Text style={{ textAlign: 'center', marginTop: 20 }}>
+            Nenhuma tarefa registrada.
+          </Text>
+        }
+      />
+    </View>
+  );
 };
 
 export default ListScreen;

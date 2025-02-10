@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, Button, Modal, FlatList, Alert } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { View, Text, Modal,  Alert } from 'react-native';
+import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
 import { FAB, Provider } from 'react-native-paper';
-import TaskItem from './components/layout/TaskItem';
+import { ReloadContext } from './utils/contexts/reloadContext';
 import { saveTasks, loadTasks } from './utils/storage';
 import { Task } from 'interfaces/task';
 import NewRoutine from './components/routines/NewRotine';
@@ -16,17 +16,15 @@ const Tab = createBottomTabNavigator();
 const App = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [showModal, setShowModal] = useState(false);
-
+  const { triggerReload } = useContext(ReloadContext);
 
   const FloatingButton = () => {
     return (
       <Provider>
-        <View style={{ flex: 1 }}>
+        <View style={{alignSelf: 'flex-end' }}
+        >
           <FAB
             style={{
-              position: "absolute",
-              bottom: 40,
-              right: 0,
               backgroundColor: "#6200EE",
             }}
             icon="plus"
@@ -46,6 +44,7 @@ const App = () => {
 
   useEffect(() => {
     saveTasks(tasks);
+    triggerReload();
   }, [tasks]);
 
   const addTask = (newTask: Task) => {
@@ -57,75 +56,66 @@ const App = () => {
       return;
     }
     setTasks([...tasks, newTask]);
-  };
-
-  const toggleTaskCompletion = (id: string) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task,
-      ),
-    );
-  };
-
-  const deleteTask = (id: string) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    setShowModal(false);
   };
 
   return (
-    <View style={{ padding: 10, marginTop: 20, width: '100%', height: '100%' }}>
-      <View>
-        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
-          📅 Rotina Diária
-        </Text>
-        <Modal
-          visible={showModal}
-          animationType="slide"
-          transparent={false}
-          onRequestClose={() => setShowModal(false)}
-        >
-          <NewRoutine onAdd={addTask} onAbort={() => setShowModal(false)} />
-        </Modal>
-        <Text style={{ marginTop: 20 }}>Minhas Rotinas</Text>
-      </View>
-      <View>
-        <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={({ route }) => ({
-              tabBarIcon: ({ color, size }) => {
-                let iconName;
-                if (route.name === 'Todas Tarefas') iconName = 'list';
-                else if (route.name === 'Por Dia') iconName = 'calendar-today';
-                return (
-                  <MaterialIcons
-                    name={iconName as any}
-                    size={size}
-                    color={color}
-                  />
-                );
-              },
-            })}
+    <NavigationContainer>
+      <View style={{ marginTop: 20, padding: 10, flex: 1 }}>
+        <View>
+          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+            📅 Rotina Diária
+          </Text>
+          <Modal
+            visible={showModal}
+            animationType="slide"
+            transparent={false}
+            onRequestClose={() => setShowModal(false)}
           >
-            <Tab.Screen
-              name="Todas Tarefas"
-              children={() => (
-                <ListScreen
-                  onToggle={toggleTaskCompletion}
-                  onDelete={deleteTask}
+            <NewRoutine onAdd={addTask} onAbort={() => setShowModal(false)} />
+          </Modal>
+        </View>
+
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ color, size }) => {
+              let iconName;
+              if (route.name === 'Todas Tarefas') iconName = 'list';
+              else if (route.name === 'Por Dia') iconName = 'calendar-today';
+              return (
+                <MaterialIcons
+                  name={iconName as any}
+                  size={size}
+                  color={color}
                 />
-              )}
-            />
-            <Tab.Screen name="Por Dia" component={TaskByDayScreen} />
-          </Tab.Navigator>
-        </NavigationContainer>
+              );
+            },
+          })}
+        >
+          <Tab.Screen name="Todas Tarefas" component={ListScreen} />
+          <Tab.Screen name="Por Dia" component={TaskByDayScreen} />
+        </Tab.Navigator>
+        <View
+          style={{
+            position: 'absolute',
+            flexDirection: 'row',
+            alignItems: 'flex-end',
+            justifyContent: 'space-between',
+            padding: 10,
+            bottom: 50,
+            marginStart: 10,
+            width: '100%',
+            marginBottom: 10,
+          }}
+        >
+          <Text style={{marginStart: 0, flex: 0.5}}>
+            ✅ Concluídas: {tasks.filter((task) => task.completed).length} /{' '}
+            {tasks.length}
+          </Text>
+          <FloatingButton />
+        </View>
       </View>
-      <View style={{ position: 'absolute', bottom: 0, width: '100%', marginStart: 10 }}>
-        <Text style={{ marginBottom: 30, marginStart: 10 }}>
-          ✅ Concluídas: {tasks.filter((task) => task.completed).length} /{' '}
-          {tasks.length}
-        </Text>
-        <FloatingButton />
-      </View>
-    </View>
+    </NavigationContainer>
   );
 };
 
