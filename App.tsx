@@ -68,7 +68,6 @@ const App = () => {
     setTasks([...tasks, newTask]);
     setShowModal(false);
   };
-
   return (
     <ReloadContext.Provider value={{ reload, triggerReload, resetReload }}>
       <NavigationContainer>

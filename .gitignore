@@ -4,6 +4,7 @@
 node_modules/
 
 # Expo
+android/
 .expo/
 dist/
 web-build/
@@ -34,3 +35,7 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+#miscelaneous
+.idea/
+.vscode/
