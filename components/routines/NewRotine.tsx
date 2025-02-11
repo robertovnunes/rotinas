@@ -1,13 +1,11 @@
 import { Task } from 'interfaces/task';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, Button, TextInput, Alert } from 'react-native';
-import { FAB, Provider } from "react-native-paper";
+import { ReloadContext } from '../../utils/contexts/reloadContext';
 interface NewRoutineProps {
   onAdd: (task: Task) => void;
   onAbort: () => void;
 };
-
-
 
 const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
   const [titulo, setTitulo] = useState('');
@@ -15,6 +13,7 @@ const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
   const [horario, setHorario] = useState('');
   const [dias, setDias] = useState<string[]>([]);
   const [recorrente, setRecorrente] = useState(false);
+  const { triggerReload } = useContext(ReloadContext);
 
   const addTask = () => {
     if (!titulo || !horario || dias.length === 0) {
@@ -36,13 +35,14 @@ const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
       completed: false,
     };
 
-    onAdd(newTask);
-
     setTitulo('');
     setDescricao('');
     setHorario('');
     setDias([]);
     setRecorrente(false);
+    
+    onAdd(newTask);
+    triggerReload();
   };
 
   return (

@@ -8,10 +8,10 @@ import { ReloadContext } from "../../utils/contexts/reloadContext";
 
     
 const ListScreen: React.FC = () => {
+  
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  const { reload } = useContext(ReloadContext);
-
+  const { reload, resetReload } = useContext(ReloadContext);
 
   // Atualizar tarefas sempre que a tela for focada
   useFocusEffect(
@@ -20,14 +20,17 @@ const ListScreen: React.FC = () => {
         const fetchTasks = async () => {
             if (isActive) {
                 const savedTasks = await loadTasks();
-                setTasks(savedTasks);
+                 setTasks(savedTasks);
             }
         };
-        fetchTasks();
+        fetchTasks().finally(
+            () => {
+                resetReload();
+            });
         return () => {
             isActive = false;
         };
-    }, [reload])
+    }, [reload, resetReload])
   );
 
   useEffect(() => {
