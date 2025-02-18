@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { View, Text, Modal,  Alert } from 'react-native';
+import { View, Text, Modal, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
@@ -31,12 +31,11 @@ const App = () => {
   const FloatingButton = () => {
     return (
       <Provider>
-        <View style={{alignSelf: 'flex-end' }}
-        >
+        <View style={{ alignSelf: 'flex-end' }}>
           <FAB
             style={{
               marginEnd: 10,
-              backgroundColor: "#6200EE",
+              backgroundColor: '#6200EE',
             }}
             icon="plus"
             onPress={() => setShowModal(true)}
@@ -52,6 +51,18 @@ const App = () => {
       setTasks(savedTasks);
     })();
   }, []);
+
+  //atualiza se triggerReload for acionado
+  useEffect(() => {
+    if (reload) {
+      (async () => {
+        const savedTasks = await loadTasks();
+        setTasks(savedTasks);
+        resetReload();
+      })();
+    }
+  }, [reload]);
+
 
   useEffect(() => {
     saveTasks(tasks);
@@ -75,7 +86,14 @@ const App = () => {
           <SafeAreaView style={{ flex: 1 }}>
             <View style={{ flex: 1 }}>
               <View>
-                <Text style={{ margin: 10, fontSize: 24, fontWeight: 'bold', marginBottom: 0 }}>
+                <Text
+                  style={{
+                    margin: 10,
+                    fontSize: 24,
+                    fontWeight: 'bold',
+                    marginBottom: 0,
+                  }}
+                >
                   📅 Rotina Diária
                 </Text>
                 <Modal
@@ -97,7 +115,7 @@ const App = () => {
                 screenOptions={({ route }) => ({
                   tabBarIcon: ({ color, size }) => {
                     let iconName;
-                    if (route.name === 'Todas Tarefas') iconName = 'list';
+                    if (route.name === 'Todas as tarefas') iconName = 'list';
                     else if (route.name === 'Por Dia')
                       iconName = 'calendar-today';
                     return (
@@ -110,7 +128,7 @@ const App = () => {
                   },
                 })}
               >
-                <Tab.Screen name="Todas Tarefas"  component={ListScreen} />
+                <Tab.Screen name="Todas as tarefas" component={ListScreen} />
                 <Tab.Screen name="Por Dia" component={TaskByDayScreen} />
               </Tab.Navigator>
               <View

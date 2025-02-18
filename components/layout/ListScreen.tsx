@@ -11,7 +11,7 @@ const ListScreen: React.FC = () => {
   
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  const { reload, resetReload } = useContext(ReloadContext);
+  const { reload, resetReload, triggerReload } = useContext(ReloadContext);
 
   // Atualizar tarefas sempre que a tela for focada
   useFocusEffect(
@@ -47,6 +47,7 @@ const ListScreen: React.FC = () => {
 
   const deleteTask = (id: string) => {
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    triggerReload();
   };
 
   return (

@@ -1,19 +1,40 @@
 import { Task } from 'interfaces/task';
 import React, { useState, useContext } from 'react';
-import { View, Text, Button, TextInput, Alert } from 'react-native';
+import { View, Text, Button, TextInput, Alert, Platform, TouchableOpacity, StyleSheet } from 'react-native';
 import { ReloadContext } from '../../utils/contexts/reloadContext';
+import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
+
 interface NewRoutineProps {
   onAdd: (task: Task) => void;
   onAbort: () => void;
-};
+}
 
 const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [horario, setHorario] = useState('');
+  const [horario, setHorario] = useState<Date | null>(new Date());
   const [dias, setDias] = useState<string[]>([]);
   const [recorrente, setRecorrente] = useState(false);
   const { triggerReload } = useContext(ReloadContext);
+
+  const openTimePicker = () => {
+    if (Platform.OS === 'android') {
+      DateTimePickerAndroid.open({
+        value: horario || new Date(),
+        mode: 'time',
+        is24Hour: true,
+        onChange: (event, selectedTime) => {
+          if (selectedTime) setHorario(selectedTime);
+        },
+      });
+    }
+  };
+
+  const formatarHorario = (date: Date | null) => {
+    return date
+      ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      : 'Selecionar horário';
+  };
 
   const addTask = () => {
     if (!titulo || !horario || dias.length === 0) {
@@ -30,23 +51,23 @@ const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
       descricao,
       recorrente,
       dias,
-      horario,
+      horario: formatarHorario(horario), // Salva o horário formatado como string
       icon: '📝',
       completed: false,
     };
 
     setTitulo('');
     setDescricao('');
-    setHorario('');
+    setHorario(null);
     setDias([]);
     setRecorrente(false);
-    
+
     onAdd(newTask);
     triggerReload();
   };
 
   return (
-    <View>
+    <View style={{ padding: 20 }}>
       <Text>Nova Rotina</Text>
       <TextInput
         placeholder="Título da Tarefa"
@@ -60,17 +81,57 @@ const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
         onChangeText={setDescricao}
         style={{ borderBottomWidth: 1, marginBottom: 10, padding: 5 }}
       />
-      <TextInput
-        placeholder="Horário (ex: 08:00)"
-        value={horario}
-        onChangeText={setHorario}
-        style={{ borderBottomWidth: 1, marginBottom: 10, padding: 5 }}
-      />
+
+      <View
+        style={{
+          marginBottom: 10,
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+        }}
+      >
+        {/* Seletor de Hora */}
+        <Text
+          style={{
+            fontSize: 24,
+          }}
+        >
+          Horário:
+        </Text>
+        <Text
+          style={{
+            fontSize: 32,
+            margin: 10,
+            fontWeight: 'bold',
+            marginBottom: 5,
+          }}
+        >
+          {formatarHorario(horario)}
+        </Text>
+
+        <TouchableOpacity
+          onPress={openTimePicker}
+          style={{
+            backgroundColor: 'transparent',
+            padding: 10,
+            borderRadius: 5,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 25,
+              color: 'white',
+            }}
+          >
+            🛠
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       <View style={{ marginBottom: 10 }}>
         <Text>Selecione os dias da semana:</Text>
-        <View style={{ flexDirection: 'row',
-          marginStart: '5%'
-         }}>
+        <View style={{ flexDirection: 'row', marginStart: '5%' }}>
           {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((dia) => (
             <Button
               key={dia}
@@ -81,26 +142,37 @@ const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
                     ? prevDias.filter((d) => d !== dia)
                     : [...prevDias, dia],
                 );
-                if (dias.length > 0) {
-                  setRecorrente(true);
-                } else {
-                  setRecorrente(false);
-                }
+                setRecorrente(dias.length > 0);
               }}
               color={dias.includes(dia) ? 'green' : 'gray'}
             />
           ))}
         </View>
       </View>
-      <View style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        }}>
-            <Button title="Cancelar" onPress={onAbort} />
-            <Button title="Adicionar Tarefa" onPress={addTask} />
-        </View>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <TouchableOpacity
+          onPress={onAbort}
+          style={{ margin: 5, padding: 10, backgroundColor: 'red' }}
+        >
+          <Text style={{ color: 'white', fontSize: 18 }}>Cancelar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={addTask}
+          style={{ margin: 5, padding: 10, backgroundColor: 'green' }}
+        >
+          <Text style={{ color: 'white', fontSize: 18 }}>Adicionar</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
+
+
 
 export default NewRoutine;
