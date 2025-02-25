@@ -1,8 +1,8 @@
 import { Task } from 'interfaces/task';
 import React, { useState, useContext } from 'react';
 import { View, Text, Button, TextInput, Alert, Platform, TouchableOpacity, StyleSheet } from 'react-native';
-import { ReloadContext } from '../../utils/contexts/reloadContext';
 import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { ReloadContext } from '../../utils/contexts/reloadContext';
 
 interface NewRoutineProps {
   onAdd: (task: Task) => void;
@@ -31,9 +31,7 @@ const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
   };
 
   const formatarHorario = (date: Date | null) => {
-    return date
-      ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      : 'Selecionar horário';
+    return date ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
   };
 
   const addTask = () => {
@@ -61,7 +59,6 @@ const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
     setHorario(null);
     setDias([]);
     setRecorrente(false);
-
     onAdd(newTask);
     triggerReload();
   };

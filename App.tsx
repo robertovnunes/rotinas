@@ -18,6 +18,8 @@ const App = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [reload, setReload] = useState(false);
+  const [ completedTasks, setCompletedTasks ] = useState(0);
+  const [ totalTasks, setTotalTasks ] = useState(0);
 
   const triggerReload = () => {
     setReload(true); // Define reload como true para disparar o recarregamento
@@ -26,6 +28,19 @@ const App = () => {
   // Garante que o reload volte a ser false após o recarregamento
   const resetReload = () => {
     setReload(false);
+  };
+
+  const getTasksLength = () => {
+    setTotalTasks(tasks.length);
+  };
+
+  const getCompletedTasksLength = () => {
+    setCompletedTasks(tasks.filter(task => task.completed).length);
+  };
+
+  const updateTasksLength = () => {
+    getTasksLength();
+    getCompletedTasksLength();
   };
 
   const FloatingButton = () => {
@@ -58,6 +73,7 @@ const App = () => {
       (async () => {
         const savedTasks = await loadTasks();
         setTasks(savedTasks);
+        updateTasksLength();
         resetReload();
       })();
     }
@@ -67,7 +83,7 @@ const App = () => {
   useEffect(() => {
     saveTasks(tasks);
   }, [tasks]);
-
+  
   const addTask = (newTask: Task) => {
     if (!newTask.titulo || !newTask.horario || newTask.dias.length === 0) {
       Alert.alert(
@@ -77,8 +93,10 @@ const App = () => {
       return;
     }
     setTasks([...tasks, newTask]);
+    triggerReload();
     setShowModal(false);
   };
+
   return (
     <ReloadContext.Provider value={{ reload, triggerReload, resetReload }}>
       <NavigationContainer>
@@ -145,8 +163,8 @@ const App = () => {
                 }}
               >
                 <Text>
-                  ✅ Concluídas: {tasks.filter((task) => task.completed).length}{' '}
-                  / {tasks.length}
+                  ✅ Concluídas: {completedTasks}{' '}
+                  / {totalTasks}
                 </Text>
                 <FloatingButton />
               </View>

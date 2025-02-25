@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, FlatList, Button, TouchableOpacity } from 'react-native';
 import { Task } from 'interfaces/task';
 import { loadTasks } from '../../utils/storage';
+import { ReloadContext } from '../../utils/contexts/reloadContext';
+
 
 const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
@@ -11,6 +13,7 @@ const TaskByDayScreen = () => {
   const [selectedDay, setSelectedDay] = useState(currentDate.getDay()); // Dia atual
   const [monthDay, setMonthDay] = useState(currentDate.getDate()); // Dia do mês
   const [month, setMonth] = useState(currentDate.getMonth()); // Mês
+  const { reload, resetReload } = useContext(ReloadContext);
   
 
   useEffect(() => {
@@ -19,7 +22,7 @@ const TaskByDayScreen = () => {
       setTasks(savedTasks);
     }
     fetchTasks();
-  }, []);
+  }, [reload]);
 
   // Filtrar tarefas que têm o dia selecionado na lista de dias da task
   const filteredTasks = tasks.filter((task) =>
