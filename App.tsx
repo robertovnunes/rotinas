@@ -73,15 +73,16 @@ const App = () => {
       (async () => {
         const savedTasks = await loadTasks();
         setTasks(savedTasks);
-        updateTasksLength();
         resetReload();
       })();
     }
   }, [reload]);
-
-
+  
+  
   useEffect(() => {
     saveTasks(tasks);
+    updateTasksLength();
+
   }, [tasks]);
   
   const addTask = (newTask: Task) => {

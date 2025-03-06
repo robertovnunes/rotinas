@@ -31,7 +31,9 @@ const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
   };
 
   const formatarHorario = (date: Date | null) => {
-    return date ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+    return date
+      ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      : 'Selecionar horário';
   };
 
   const addTask = () => {
