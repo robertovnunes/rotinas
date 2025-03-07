@@ -38,3 +38,5 @@ yarn-error.*
 #miscelaneous
 .idea/
 .vscode/
+.idea/*
+.idea/misc.xml
