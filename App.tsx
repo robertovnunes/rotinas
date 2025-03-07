@@ -82,7 +82,6 @@ const App = () => {
   useEffect(() => {
     saveTasks(tasks);
     updateTasksLength();
-
   }, [tasks]);
   
   const addTask = (newTask: Task) => {
