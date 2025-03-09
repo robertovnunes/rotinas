@@ -1,30 +1,26 @@
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Task } from 'interfaces/task';
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
-  View,
-  Text,
-  Button,
-  TextInput,
   Alert,
+  Button,
   Platform,
+  Text,
+  TextInput,
   TouchableOpacity,
-  StyleSheet,
+  View
 } from 'react-native';
-import {
-  DateTimePickerAndroid,
-  DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
 import { ReloadContext } from '../../../utils/contexts/reloadContext';
+import { saveTask } from '../../../utils/storage';
 
 interface NewRoutineProps {
-  onAdd: (task: Task) => void;
   onAbort: () => void;
 }
 
-const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
+const NewRoutine: React.FC<NewRoutineProps> = ({onAbort }) => {
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [horario, setHorario] = useState<Date | null>(new Date());
+  const [horario, setHorario] = useState<Date | null>(null);
   const [dias, setDias] = useState<string[]>([]);
   const [recorrente, setRecorrente] = useState(false);
   const { triggerReload } = useContext(ReloadContext);
@@ -35,7 +31,7 @@ const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
         value: horario || new Date(),
         mode: 'time',
         is24Hour: true,
-        onChange: (event, selectedTime) => {
+        onChange: (_event, selectedTime) => {
           if (selectedTime) setHorario(selectedTime);
         },
       });
@@ -43,9 +39,10 @@ const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
   };
 
   const formatarHorario = (date: Date | null) => {
-    return date
-      ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      : 'Selecionar horário';
+    if (date) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   const addTask = () => {
@@ -73,7 +70,7 @@ const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
     setHorario(null);
     setDias([]);
     setRecorrente(false);
-    onAdd(newTask);
+    saveTask(newTask);
     triggerReload();
   };
 

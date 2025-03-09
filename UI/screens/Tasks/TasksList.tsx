@@ -3,7 +3,7 @@ import { View, Text, FlatList } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { loadTasks, saveTasks } from '../../../utils/storage';
 import { Task } from 'interfaces/task';
-import TaskItem from '../../components/TaskItem';
+import TaskItemList from '../../components/TaskItemList';
 import { ReloadContext } from '../../../utils/contexts/reloadContext';
 import { useTheme } from '../../../utils/contexts/themeContext';
 
@@ -31,7 +31,7 @@ const ListScreen: React.FC = () => {
       return () => {
         isActive = false;
       };
-    }, [reload, resetReload]),
+    }, [reload]),
   );
 
   useEffect(() => {
@@ -60,14 +60,14 @@ const ListScreen: React.FC = () => {
         data={tasks}
         keyExtractor={(task) => task.id}
         renderItem={({ item }) => (
-          <TaskItem
+          <TaskItemList
             task={item}
             onToggle={toggleTaskCompletion}
             onDelete={deleteTask}
           />
         )}
         ListEmptyComponent={
-          <Text style={{ textAlign: 'center', marginTop: 20, color: color }}>
+          <Text style={{ textAlign: 'center', marginTop: 20, color }}>
             Nenhuma tarefa registrada.
           </Text>
         }

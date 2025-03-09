@@ -5,7 +5,7 @@ import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { FAB, Provider } from 'react-native-paper';
 import { ReloadContext } from '../../utils/contexts/reloadContext';
-import { saveTasks, loadTasks } from '../../utils/storage';
+import { loadTasks } from '../../utils/storage';
 import { Task } from 'interfaces/task';
 import NewRoutine from '../components/routines/NewRotine';
 import TaskByDayScreen from './Tasks/TaskByDayScreen';
@@ -25,6 +25,7 @@ const Rotinas = () => {
 
   const triggerReload = () => {
     setReload(true); // Define reload como true para disparar o recarregamento
+    updateTasksLength();
   };
 
   // Garante que o reload volte a ser false após o recarregamento
@@ -80,24 +81,6 @@ const Rotinas = () => {
     }
   }, [reload]);
 
-  useEffect(() => {
-    saveTasks(tasks);
-    updateTasksLength();
-  }, [tasks]);
-
-  const addTask = (newTask: Task) => {
-    if (!newTask.titulo || !newTask.horario || newTask.dias.length === 0) {
-      Alert.alert(
-        'Erro',
-        'Preencha todos os campos e selecione pelo menos um dia!',
-      );
-      return;
-    }
-    setTasks([...tasks, newTask]);
-    triggerReload();
-    setShowModal(false);
-  };
-
   const color = isDarkMode ? 'white' : 'black';
 
   return (
@@ -116,7 +99,6 @@ const Rotinas = () => {
                 }}
               >
                 <NewRoutine
-                  onAdd={addTask}
                   onAbort={() => setShowModal(false)}
                 />
               </Modal>

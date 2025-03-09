@@ -8,7 +8,7 @@ interface TaskItemProps {
     onDelete: (id: string) => void;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) => {
+const TaskItemList: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) => {
     return (
         <View
             style={{
@@ -35,4 +35,4 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) => {
     );
 };
 
-export default TaskItem;
+export default TaskItemList;
