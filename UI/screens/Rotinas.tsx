@@ -8,9 +8,9 @@ import { ReloadContext } from '../../utils/contexts/reloadContext';
 import { saveTasks, loadTasks } from '../../utils/storage';
 import { Task } from 'interfaces/task';
 import NewRoutine from '../components/routines/NewRotine';
-import ListScreen from '../components/layout/ListScreen';
-import TaskByDayScreen from '../components/layout/TaskByDayScreen';
+import TaskByDayScreen from './Tasks/TaskByDayScreen';
 import { useTheme } from '../../utils/contexts/themeContext';
+import TaskByWeekScreen from './Tasks/TaskByWeekScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,8 +22,6 @@ const Rotinas = () => {
   const [totalTasks, setTotalTasks] = useState(0);
 
   const { isDarkMode } = useTheme();
-
-
 
   const triggerReload = () => {
     setReload(true); // Define reload como true para disparar o recarregamento
@@ -105,7 +103,7 @@ const Rotinas = () => {
   return (
     <ReloadContext.Provider value={{ reload, triggerReload, resetReload }}>
       <SafeAreaProvider>
-        <SafeAreaView style={{ flex: 1         }}>
+        <SafeAreaView style={{ flex: 1 }}>
           {/* ... (resto do seu código) */}
           <View style={{ flex: 1 }}>
             <View>
@@ -128,8 +126,8 @@ const Rotinas = () => {
               screenOptions={({ route }) => ({
                 tabBarIcon: ({ color, size }) => {
                   let iconName;
-                  if (route.name === 'Todas as tarefas') iconName = 'list';
-                  else if (route.name === 'Por Dia')
+                  if (route.name === 'Por dia') iconName = 'list';
+                  else if (route.name === 'Por semana')
                     iconName = 'calendar-today';
                   return (
                     <MaterialIcons
@@ -139,10 +137,11 @@ const Rotinas = () => {
                     />
                   );
                 },
+                headerShown: false,
               })}
             >
-              <Tab.Screen name="Todas as tarefas" component={ListScreen} />
-              <Tab.Screen name="Por Dia" component={TaskByDayScreen} />
+              <Tab.Screen name="Por dia" component={TaskByDayScreen} />
+              <Tab.Screen name="Por semana" component={TaskByWeekScreen} />
             </Tab.Navigator>
             <View
               style={{
@@ -170,5 +169,3 @@ const Rotinas = () => {
 };
 
 export default Rotinas;
-
-

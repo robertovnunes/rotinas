@@ -3,7 +3,7 @@ import { View, Text, FlatList } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { loadTasks, saveTasks } from '../../../utils/storage';
 import { Task } from 'interfaces/task';
-import TaskItem from './TaskItem';
+import TaskItem from '../../components/TaskItem';
 import { ReloadContext } from '../../../utils/contexts/reloadContext';
 import { useTheme } from '../../../utils/contexts/themeContext';
 
@@ -14,7 +14,6 @@ const ListScreen: React.FC = () => {
 
   const { isDarkMode } = useTheme();
   const color = isDarkMode ? 'white' : 'black';
-
 
   // Atualizar tarefas sempre que a tela for focada
   useFocusEffect(
@@ -54,9 +53,7 @@ const ListScreen: React.FC = () => {
 
   return (
     <View style={{ flex: 1, marginTop: 10 }}>
-      <Text
-        style={{ fontSize: 20, textAlign: 'center', margin: 10, color }}
-      >
+      <Text style={{ fontSize: 20, textAlign: 'center', margin: 10, color }}>
         Lista de Tarefas
       </Text>
       <FlatList
