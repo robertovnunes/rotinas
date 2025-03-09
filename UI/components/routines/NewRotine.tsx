@@ -1,8 +1,20 @@
 import { Task } from 'interfaces/task';
 import React, { useState, useContext } from 'react';
-import { View, Text, Button, TextInput, Alert, Platform, TouchableOpacity, StyleSheet } from 'react-native';
-import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { ReloadContext } from '../../utils/contexts/reloadContext';
+import {
+  View,
+  Text,
+  Button,
+  TextInput,
+  Alert,
+  Platform,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import {
+  DateTimePickerAndroid,
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
+import { ReloadContext } from '../../../utils/contexts/reloadContext';
 
 interface NewRoutineProps {
   onAdd: (task: Task) => void;
@@ -171,7 +183,5 @@ const NewRoutine: React.FC<NewRoutineProps> = ({ onAdd, onAbort }) => {
     </View>
   );
 };
-
-
 
 export default NewRoutine;

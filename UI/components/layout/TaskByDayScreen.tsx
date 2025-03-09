@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { View, Text, FlatList, Button, TouchableOpacity } from 'react-native';
 import { Task } from 'interfaces/task';
-import { loadTasks } from '../../utils/storage';
-import { ReloadContext } from '../../utils/contexts/reloadContext';
+import { loadTasks } from '../../../utils/storage';
+import { ReloadContext } from '../../../utils/contexts/reloadContext';
 import { useFocusEffect } from '@react-navigation/native';
-
+import { useTheme } from '../../../utils/contexts/themeContext';
 
 const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
@@ -15,6 +15,10 @@ const TaskByDayScreen = () => {
   const [monthDay, setMonthDay] = useState(currentDate.getDate()); // Dia do mês
   const [month, setMonth] = useState(currentDate.getMonth()); // Mês
   const { reload } = useContext(ReloadContext);
+
+
+  const { isDarkMode } = useTheme();
+  const color = isDarkMode ? 'white' : 'black';
 
   useFocusEffect(
     useCallback(() => {
@@ -27,9 +31,8 @@ const TaskByDayScreen = () => {
       return () => {
         isActive = false;
       };
-    }, [])
+    }, []),
   );
-  
 
   // Carregar tarefas
   useFocusEffect(
@@ -45,12 +48,12 @@ const TaskByDayScreen = () => {
       return () => {
         isActive = false;
       };
-    }, [reload])
+    }, [reload]),
   );
 
   // Filtrar tarefas que têm o dia selecionado na lista de dias da task
   const filteredTasks = tasks.filter((task) =>
-    task.dias.includes(weekDays[selectedDay])
+    task.dias.includes(weekDays[selectedDay]),
   );
 
   // Mudar para o dia anterior
@@ -92,8 +95,6 @@ const TaskByDayScreen = () => {
     }
   };
 
-
-
   return (
     <View style={{ padding: 20 }}>
       {/* Cabeçalho */}
@@ -105,7 +106,7 @@ const TaskByDayScreen = () => {
         }}
       >
         <Button title="⬅ Anterior" onPress={prevDayWeek} />
-        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', color }}>
           {`${weekDays[selectedDay]} (${monthDay}/${month + 1})`}
         </Text>
         <Button title="Próximo ➡" onPress={nextDayWeek} />
@@ -127,7 +128,7 @@ const TaskByDayScreen = () => {
               borderRadius: 5,
             }}
           >
-            <Text>
+            <Text style={{ color }}>
               {item.icon} {item.titulo} - {item.horario}
             </Text>
             <TouchableOpacity
@@ -138,7 +139,7 @@ const TaskByDayScreen = () => {
           </View>
         )}
         ListEmptyComponent={
-          <Text style={{ textAlign: 'center', marginTop: 20 }}>
+          <Text style={{ textAlign: 'center', marginTop: 20, color }}>
             Nenhuma tarefa para este dia.
           </Text>
         }
