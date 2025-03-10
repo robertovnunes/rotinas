@@ -1,12 +1,22 @@
 declare module 'interfaces/task' {
+
+    export interface subTask {
+        id: string;
+        titulo: string;
+        concluido: boolean;
+    }
+
     export interface Task {
         id: string;
         titulo: string;
         descricao: string;
-        recorrente: boolean;
-        dias: string[];
-        horario: string;
-        icon: string;
-        completed: boolean;
+        data: Date | null;
+        horario: string | null;
+        concluido: boolean;
+        importante: boolean;
+        urgente: boolean;
+        prioridade: number;
+        subtasks: subTask[];
     }
+
 }
