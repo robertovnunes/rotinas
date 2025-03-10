@@ -25,26 +25,13 @@ const Rotinas = () => {
 
   const triggerReload = () => {
     setReload(true); // Define reload como true para disparar o recarregamento
-    updateTasksLength();
   };
-
+  
   // Garante que o reload volte a ser false após o recarregamento
   const resetReload = () => {
     setReload(false);
   };
 
-  const getTasksLength = () => {
-    setTotalTasks(tasks.length);
-  };
-
-  const getCompletedTasksLength = () => {
-    setCompletedTasks(tasks.filter((task) => task.completed).length);
-  };
-
-  const updateTasksLength = () => {
-    getTasksLength();
-    getCompletedTasksLength();
-  };
 
   const FloatingButton = () => {
     return (
@@ -138,9 +125,6 @@ const Rotinas = () => {
                 width: '100%',
               }}
             >
-              <Text style={{ color, fontSize: 16 }}>
-                ✅ Concluídas: {completedTasks} / {totalTasks}
-              </Text>
               <FloatingButton />
             </View>
           </View>

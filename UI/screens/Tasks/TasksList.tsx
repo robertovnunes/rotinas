@@ -12,6 +12,9 @@ const ListScreen: React.FC = () => {
 
   const { reload, resetReload, triggerReload } = useContext(ReloadContext);
 
+  const [taskLenght, setTaskLenght] = useState(0);
+  const [completedTasks, setCompletedTasks] = useState(0);
+
   const { isDarkMode } = useTheme();
   const color = isDarkMode ? 'white' : 'black';
 
@@ -72,6 +75,21 @@ const ListScreen: React.FC = () => {
           </Text>
         }
       />
+      <View
+        style={{
+          flex: 0,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          margin: 10,
+        }}
+      >
+        <Text style={{ textAlign: 'left', marginTop: 20, color }}>
+          Total de tarefas: {tasks.length}
+        </Text>
+        <Text style={{ textAlign: 'center', marginTop: 20, color }}>
+          Tarefas completadas: {tasks.filter((task) => task.completed).length}
+        </Text>
+      </View>
     </View>
   );
 };

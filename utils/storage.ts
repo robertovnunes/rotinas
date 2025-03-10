@@ -58,3 +58,6 @@ export const loadTasks = async (): Promise<Task[]> => {
 };
 
 
+declare module 'utils/storage' {
+    
+}
