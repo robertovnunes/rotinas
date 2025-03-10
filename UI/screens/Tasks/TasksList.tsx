@@ -80,13 +80,13 @@ const ListScreen: React.FC = () => {
           flex: 0,
           flexDirection: 'row',
           justifyContent: 'space-between',
-          margin: 10,
+          margin: 20,
         }}
       >
-        <Text style={{ textAlign: 'left', marginTop: 20, color }}>
+        <Text style={{ marginTop: 20, color }}>
           Total de tarefas: {tasks.length}
         </Text>
-        <Text style={{ textAlign: 'center', marginTop: 20, color }}>
+        <Text style={{marginTop: 20, color }}>
           Tarefas completadas: {tasks.filter((task) => task.completed).length}
         </Text>
       </View>
